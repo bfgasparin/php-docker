@@ -65,8 +65,8 @@ RUN set -xe \
 # --enable-mysqlnd is included here because it's harder to compile after the fact than extensions are (since it's a plugin for several extensions, not an extension in itself)
 		--enable-mysqlnd \
 		--with-curl \
-		--with-libedit \ @todo compile with libedit
-#		--with-openssl \ @todo compile with openssl
+# --with-libedit @todo compile with libedit
+# --with-openssl @todo compile with openssl
 		--with-zlib \
 	&& make -j"$(nproc)" \
 	&& make install \
