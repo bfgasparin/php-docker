@@ -13,9 +13,11 @@ These images contains PHP compiled with:
 - cgi disabled
 - mysqlnd enabled
 - curl support
+- zlib support
+
+(@todo)
 - readline support
 - openssl support
-- zlib support
 
 ## How to use this image.
 
