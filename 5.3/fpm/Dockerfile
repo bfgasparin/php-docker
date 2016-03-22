@@ -25,11 +25,20 @@ ENV PHP_INI_DIR /usr/local/etc/php
 RUN mkdir -p $PHP_INI_DIR/conf.d
 
 ENV PHP_EXTRA_CONFIGURE_ARGS --enable-fpm --with-fpm-user=www-data --with-fpm-group=www-data
-ENV GPG_KEYS 0B96609E270F565C13292B24C13C70B87267B52D 0BD78B5F97500D450838F95DFE857D9A90D90EC1 F38252826ACD957EF380D39F2F7956BC5DA04B5D
 
 ENV PHP_VERSION 5.3.29
 ENV PHP_FILENAME php-5.3.29.tar.xz
-ENV PHP_SHA256 b91dbd3c53f9895e8f7b29e5fed25a64dd3a76b454f6ef7265e73c96b4303f30
+ENV PHP_MD5 dcff9c881fe436708c141cfc56358075
+
+# @TODO verify public GPG Keys from php release
+# ENV GPG_KEYS 0A95E9A026542D53835E3F3A7DEC4E69FC9C83D7 0B96609E270F565C13292B24C13C70B87267B52D
+# RUN curl -fSL "http://php.net/get/$PHP_FILENAME.asc/from/this/mirror" -o "$PHP_FILENAME.asc" \
+# && export GNUPGHOME="$(mktemp -d)" 
+# && for key in $GPG_KEYS; do \
+#	  	  gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
+# 	  done \ 
+# RUN gpg --batch --verify "$PHP_FILENAME.asc" "$PHP_FILENAME" 
+# RUN rm -r "$GNUPGHOME" "$PHP_FILENAME.asc" \
 
 RUN set -xe \
 	&& buildDeps=" \
@@ -43,14 +52,7 @@ RUN set -xe \
 	" \
 	&& apt-get update && apt-get install -y $buildDeps --no-install-recommends && rm -rf /var/lib/apt/lists/* \
 	&& curl -fSL "http://php.net/get/$PHP_FILENAME/from/this/mirror" -o "$PHP_FILENAME" \
-	&& echo "$PHP_SHA256 *$PHP_FILENAME" | sha256sum -c - \
-	&& curl -fSL "http://php.net/get/$PHP_FILENAME.asc/from/this/mirror" -o "$PHP_FILENAME.asc" \
-	&& export GNUPGHOME="$(mktemp -d)" \
-	&& for key in $GPG_KEYS; do \
-		gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
-	done \
-	&& gpg --batch --verify "$PHP_FILENAME.asc" "$PHP_FILENAME" \
-	&& rm -r "$GNUPGHOME" "$PHP_FILENAME.asc" \
+	&& echo "$PHP_MD5 *$PHP_FILENAME" | md5sum -c - \
 	&& mkdir -p /usr/src/php \
 	&& tar -xf "$PHP_FILENAME" -C /usr/src/php --strip-components=1 \
 	&& rm "$PHP_FILENAME" \

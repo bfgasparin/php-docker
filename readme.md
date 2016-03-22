@@ -1,13 +1,21 @@
-# PHP Doker Images
+# PHP Docker Images
 
 ![php](php-logo.jpg)
 Repository containing php images not supported by Docker Oficial PHP Images
 
 ## Supported tags and respective Dockerfile links
 
-* `5.3-apache`, `5.3.29-apache` [(5.3/apache/Dockerfile)](5.3/Dockerfile)
-* `5.3-fpm`, `5.3.29-fpm` [(5.3/fpm/Dockerfile)](5.3-fpm/Dockerfile)
+* `5.3-apache`, `5.3.29-apache` [(5.3/apache/Dockerfile)][1]
+* `5.3-fpm`, `5.3.29-fpm` [(5.3/fpm/Dockerfile)][2]
 
+These images contains PHP compiled with:
+
+- cgi disabled
+- mysqlnd enabled
+- curl support
+- readline support
+- openssl support
+- zlib support
 
 ## How to use this image.
 
@@ -37,6 +45,17 @@ COPY src/ /var/www/html/
 
 Where src/ is the directory containing all your php code and config/ contains your php.ini file.
 
-### With Apache
+### In FPM
 
 @todo
+
+
+### How to install more PHP extensions
+
+These PHP images are based on Oficial PHP Docker images. So, you have access to the helper scripts 
+`docker-php-ext-configure`, `docker-php-ext-install`, and `docker-php-ext-enable`. [See PHP Oficial 
+Images][3] for more details.
+
+[1]: https://github.com/bfgasparin/php-docker/blob/master/5.3/apache/Dockerfile
+[2]: https://github.com/bfgasparin/php-docker/blob/master/5.3/fpm/Dockerfile
+[3]: https://hub.docker.com/_/php/

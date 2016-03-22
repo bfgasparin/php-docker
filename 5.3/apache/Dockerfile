@@ -38,11 +38,19 @@ COPY apache2.conf /etc/apache2/apache2.conf
 ENV PHP_EXTRA_BUILD_DEPS apache2-dev
 ENV PHP_EXTRA_CONFIGURE_ARGS --with-apxs2
 
-ENV GPG_KEYS 0B96609E270F565C13292B24C13C70B87267B52D 0A95E9A026542D53835E3F3A7DEC4E69FC9C83D7
-
 ENV PHP_VERSION 5.3.29
 ENV PHP_FILENAME php-5.3.29.tar.xz
 ENV PHP_MD5 dcff9c881fe436708c141cfc56358075
+
+# @TODO verify public GPG Keys from php release
+# ENV GPG_KEYS 0A95E9A026542D53835E3F3A7DEC4E69FC9C83D7 0B96609E270F565C13292B24C13C70B87267B52D
+# RUN curl -fSL "http://php.net/get/$PHP_FILENAME.asc/from/this/mirror" -o "$PHP_FILENAME.asc" \
+# && export GNUPGHOME="$(mktemp -d)" 
+# && for key in $GPG_KEYS; do \
+#	  	  gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
+# 	  done \ 
+# RUN gpg --batch --verify "$PHP_FILENAME.asc" "$PHP_FILENAME" 
+# RUN rm -r "$GNUPGHOME" "$PHP_FILENAME.asc" \
 
 RUN set -xe \
 	&& buildDeps=" \
@@ -57,13 +65,6 @@ RUN set -xe \
 	&& apt-get update && apt-get install -y $buildDeps --no-install-recommends && rm -rf /var/lib/apt/lists/* \
 	&& curl -fSL "http://php.net/get/$PHP_FILENAME/from/this/mirror" -o "$PHP_FILENAME" \
 	&& echo "$PHP_MD5 *$PHP_FILENAME" | md5sum -c - \
-	&& curl -fSL "http://php.net/get/$PHP_FILENAME.asc/from/this/mirror" -o "$PHP_FILENAME.asc" \
-	&& export GNUPGHOME="$(mktemp -d)" \
-	&& for key in $GPG_KEYS; do \
-		gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
-	done \
-	&& gpg --batch --verify "$PHP_FILENAME.asc" "$PHP_FILENAME" \
-	&& rm -r "$GNUPGHOME" "$PHP_FILENAME.asc" \
 	&& mkdir -p /usr/src/php \
 	&& tar -xf "$PHP_FILENAME" -C /usr/src/php --strip-components=1 \
 	&& rm "$PHP_FILENAME" \
