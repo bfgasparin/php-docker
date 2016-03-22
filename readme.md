@@ -47,7 +47,7 @@ COPY src/ /var/www/html/
 
 Where src/ is the directory containing all your php code and config/ contains your php.ini file.
 
-### In FPM
+### PHP-FPM
 
 @todo
 
